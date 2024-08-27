@@ -48,17 +48,17 @@ def conll_to_list(text):
 
 
 def conll_to_tsv(text, sep=" "):
-    l = conll_to_list(text)
+    ll = conll_to_list(text)
     result = ""
-    for row in l:
+    for row in ll:
         result += "\t".join(row["tokens"]) + "\n" + "\t".join(row["tags"]) + "\n"
     return result
 
 
 def tsv_to_conll(text, sep=" "):
-    l = tsv_to_list(text)
+    ll = tsv_to_list(text)
     result = ""
-    for row in l:
+    for row in ll:
         result += "\n".join(
             [
                 f"{row['tokens'][i]}{sep}{row['tags'][i]}"
