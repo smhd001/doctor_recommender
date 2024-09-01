@@ -1,17 +1,17 @@
-from optimum.onnxruntime import ORTModelForSequenceClassification
+from optimum.onnxruntime import ORTModelForTokenClassification
 from transformers import AutoTokenizer, pipeline
 
-model = ORTModelForSequenceClassification.from_pretrained(
-    "/home/ham/hammasir/hammasir/slot_filling/traininng/ner_model/checkpoint-4",
+model = ORTModelForTokenClassification.from_pretrained(
+    "/home/ham/hammasir/hammasir/slot_filling/traininng/ner_model/checkpoint-40",
     export=True,
-    provider="TensorrtExecutionProvider",
+    provider="CUDAExecutionProvider",
     from_transformers=True,
 )
 
 
 model_id = "HooshvareLab/bert-base-parsbert-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
-classifier = pipeline("ner", model=model, tokenizer=tokenizer)
+classifier = pipeline("ner", model=model, tokenizer=tokenizer,device="cuda")
 
 
 def slot_fiiling(text) -> dict[str, str]:
