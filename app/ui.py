@@ -31,15 +31,16 @@ summary, input{
 text = speech_to_text(
     language="fa", use_container_width=True, just_once=True, key="STT"
 )
+text = "دکتر قلب خوش اخلاق وکیل آباد مشهد"
 
 if text:
     state.text_received = text
     print("result of asr", text)
     slots = slot_filing(text)
-    print(slots)
+    print("slotl", slots)
     state.slots = slots
-    search_result = search("")
-    print(search_result)
+    search_result = search(slots)
+    print("search", search_result)
     state.search_result = search_result
 
 
