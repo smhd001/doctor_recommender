@@ -13,15 +13,30 @@ def get_json(city, expertise):
         url = f"https://apigw.paziresh24.com/v1/search/{city}/{expertise}/?page={num}"
         print(url)
         response = requests.get(url)
-        data = response.json()
-        search = data.get("search")
-        result = search.get("result")
+        
+        # Check if the response status is 200 (OK)
+        if response.status_code != 200:
+            print(f"Failed to fetch data: {response.status_code}")
+            return
+        
+        # Try to decode the response as JSON
+        try:
+            data = response.json()
+        except requests.exceptions.JSONDecodeError as e:
+            print(f"Failed to decode JSON: {e}")
+            print(f"Response content: {response.text}")  # Optional: print the response content
+            return
+        
+        search = data.get("search", {})
+        result = search.get("result", [])
+        
         if result:
-            result["city"] = city
+            # Add city information to each doctor in the result list
+            for doctor in result:
+                doctor["city"] = city
             doctors_data.extend(result)
         else:
             return
-
 
 def get_expertise():
     url = "https://www.paziresh24.com/s/"
@@ -52,11 +67,15 @@ def get_all_data(city_list, expertise_list):
     for city in city_list:
         for expertise in expertise_list:
             get_json(city, expertise)
+            count += 1
             print(count)
 
 
 expertise_list = get_expertise()
-city_list = ["tehran", "mashhad"]
+city_list = ["tehran", "mashhad", "karaj", "ardabil", "bushehr", "shahrekord", "tabriz", "shiraz", "rasht", "gorgan", 
+             "hamedan", "bandar-abbas", "ilam", "isfahan", "kerman", "kermanshah", "ahvaz", "yasuj", "sanandaj",
+             "khorramabad", "arak", "sari", "bojnurd", "qazvin", "qom", "semnan", "zahedan", "birjand", "orumieh",
+             "yazd", "zanjan"]
 get_all_data(city_list, expertise_list)
 
 with open("doctors.json", "w", encoding="utf-8") as file:
