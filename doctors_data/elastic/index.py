@@ -43,6 +43,7 @@ mappings = {
         "comments_count": {"type": "integer"},
         "waiting_time": {"type": "float"},
         "clinic": {"type": "object"},
+        "medical_code": {"type": "text"},
         "about": {
             "type": "text",
         },
@@ -142,6 +143,7 @@ def index(
             "quality_of_treatment": row["quality_of_treatment"],
             "comments_count": row["comments_count"],
             "waiting_time": row["waiting_time"],
+            "medical_code": row["medical_code"],
             "clinic": row["clinic"],
         }
         es.index(index="doctors", id=i, document=doc)
