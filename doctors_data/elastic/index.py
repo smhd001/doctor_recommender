@@ -47,6 +47,8 @@ mappings = {
         "about": {
             "type": "text",
         },
+        "url": {"type": "text", "index": False},
+        "image": {"type": "text", "index": False},
     }
 }
 
@@ -145,6 +147,8 @@ def index(
             "waiting_time": row["waiting_time"],
             "medical_code": row["medical_code"],
             "clinic": row["clinic"],
+            "url": row["url"],
+            "image": row["image"],
         }
         es.index(index="doctors", id=i, document=doc)
 
