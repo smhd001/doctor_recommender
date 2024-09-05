@@ -8,21 +8,21 @@ if module_path not in sys.path:
 from elasticsearch import Elasticsearch  # noqa: E402, F401
 from query_config import query_config  # noqa: E402
 
-# # Connect to Elasticsearch
-# es = Elasticsearch(
-#     "https://localhost:9200",
-#     basic_auth=("elastic", "hammasir"),
-#     verify_certs=False,
-#     ssl_show_warn=False,
-# )
-# print(es.info())
+# Connect to Elasticsearch
+es = Elasticsearch(
+    "https://localhost:9200",
+    basic_auth=("elastic", "hammasir"),
+    verify_certs=False,
+    ssl_show_warn=False,
+)
+print(es.info())
 
 
 def search(search_params) -> list[str]:
-    result = dummy_query(search_params)
-    # final_query = build_query(search_params, query_config)
-    # result = es.search(index="doctors", body={"query": final_query})
-    return format_result(result)
+    # result = dummy_query(search_params)
+    final_query = build_query(search_params, query_config)
+    result = es.search(index="doctors", body={"query": final_query})
+    return format_result(result, search_params)
 
 
 def build_query(search_params, config=query_config):
@@ -54,14 +54,6 @@ def build_query(search_params, config=query_config):
                         "missing": 0,
                     }
                 },
-                {
-                    "field_value_factor": {
-                        "field": "rating",
-                        "factor": config["factors"]["rating"],
-                        "modifier": "none",
-                        "missing": 0,
-                    }
-                },
             ],
             "boost_mode": "sum",
             "score_mode": "sum",
@@ -77,13 +69,21 @@ def dummy_query(text):
     # fmt: on
 
 
-def format_result(result) -> list[str]:
+def get_lat_long(result, city):
+    for c in result["_source"]["clinic"]:
+        if not city or c["city"] == city:
+            if c["lat"] and c["long"]:
+                return c["lat"], c["long"]
+    return None
+
+
+def format_result(result, search_params) -> list[str]:
     formatted_result = []
     for hits in result["hits"]["hits"]:
         name = hits["_source"]["title"]
         expertise = hits["_source"]["expertise"]
-        url = hits["_source"]["url"]
         titel = name + "\n\n" + expertise
         description = hits["_source"]
-        formatted_result.append((titel, url, description))
+        lat_long = get_lat_long(hits, search_params.get("city", None))
+        formatted_result.append((titel, lat_long, description))
     return formatted_result
