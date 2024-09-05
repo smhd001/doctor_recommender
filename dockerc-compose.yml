@@ -1,0 +1,2 @@
+model path should be env 
+docker run -it --rm --gpus all -v /home/ham/hammasir/hammasir/slot_filling/traininng/ner_model/checkpoint-77:/model --net=host -e DOCKER_CONTAINER=Yes  app
