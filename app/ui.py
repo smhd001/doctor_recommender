@@ -63,5 +63,13 @@ for res in state.search_result:
             with col1:
                 st.image(config.P24_BASE_IMAGE_URL + description["image"])
             with col2:
-                f"[مشاهده در پزشک 24]({config.p24_BASE_URL}{description["url"]})"
-                f"[مسیر یابی در نشان]({config.NESHAN_BASE_URL}/{description["lat"]},{description["lon"]})"
+                p24_url = config.p24_BASE_URL + description["url"]
+                f"[مشاهده در پزشک 24]({p24_url})"
+                neshan_url = (
+                    config.NESHAN_BASE_URL
+                    + "/"
+                    + description["lat"]
+                    + ","
+                    + description["lon"]
+                )
+                f"[مسیر یابی در نشان]({neshan_url})"
