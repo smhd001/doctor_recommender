@@ -145,14 +145,17 @@ def index(
             "explanation_of_issue": row["explanation_of_issue"],
             "quality_of_treatment": row["quality_of_treatment"],
             "comments_count": row["comments_count"],
-            "waiting_time": row["waiting_time"],
+            # large amount if it does not exist to get a small score look at blew comments
+            "waiting_time": row["waiting_time"] if row["waiting_time"] else 4,
             "medical_code": row["medical_code"],
             "clinic": row["clinic"],
             "url": row["url"],
             "image": row["image"],
             # look at https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#_what_if_a_field_is_missing
             # https://github.com/elastic/elasticsearch/issues/7788 https://github.com/elastic/elasticsearch/issues/18892
-            "presence_freeturn": row["presence_freeturn"] if row["presence_freeturn"] else 0, 
+            "presence_freeturn": row["presence_freeturn"]
+            if row["presence_freeturn"]
+            else 0,
         }
         es.index(index="doctors", id=i, document=doc)
 
