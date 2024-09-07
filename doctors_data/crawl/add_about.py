@@ -38,7 +38,7 @@ def get_about(employee_id):
     data = data["providers"][0]["biography"]
     data = html.unescape(data)
     # delete html tags using regex
-    data = re.sub(r"<.*?>", "", data)
+    data = re.sub(r"<.*?>", " ", data)
     return data
 
 
