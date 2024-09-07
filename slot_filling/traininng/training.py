@@ -21,7 +21,7 @@ from read_data import read_data, tags_list  # noqa: E402
 
 
 def get_model(model_id, freeze_base=False) -> tuple:
-    if "roberta" in model_id:
+    if "roberta" in model_id or "AriaBERT" in model_id:
         tokenizer = AutoTokenizer.from_pretrained(model_id, add_prefix_space=True)
     else:
         tokenizer = AutoTokenizer.from_pretrained(model_id)
