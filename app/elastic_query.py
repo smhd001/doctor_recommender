@@ -33,6 +33,7 @@ def configure_query(search_params, default_config):
     for f_score, v in config["function_score"].items():
         if f_score in search_params:
             function_scores[f_score] = v
+    function_scores["popularity"] = config["function_score"]["popularity"]
     config["function_score"] = function_scores
     # map gender
     if "gender" in search_params:
@@ -44,6 +45,50 @@ def configure_query(search_params, default_config):
 
 
 def build_query(search_params, config=query_config):
+    query = {"bool": {"must": [], "must_not": [], "should": [], "filter": []}}
+
+    problem_expertise_query = {"bool": {"should": []}}
+    for field in ["problem", "expertise"]:
+        if field in search_params:
+            problem_expertise_query["bool"]["should"].extend(
+                [{"match": {"expertise": e}} for e in search_params[field]]
+            )
+    query["bool"]["must"].append(problem_expertise_query)
+
+    if "neighborhood" in search_params:
+        query["bool"]["filter"].extend(
+            [{"match": {"clinic.address": e}} for e in search_params["neighborhood"]]
+        )
+
+    if "city" in search_params:
+        query["bool"]["filter"].append(
+            {"term": {"clinic.city": search_params["city"][0]}}
+        )
+
+    if "insurance" in search_params:
+        query["bool"]["should"].extend(
+            [{"match": {"insurance": e}} for e in search_params["insurance"]]
+        )
+
+    if "gender" in search_params:
+        query["bool"]["filter"].append({"term": {"gender": search_params["gender"][0]}})
+
+    if "first-available-appointment" in search_params:
+        query["bool"]["must_not"].append({"term": {"presence_freeturn": 0}})
+
+    final_query = {
+        "function_score": {
+            "query": query,
+            "functions": list(config["function_score"].values()),
+            "boost_mode": "sum",
+            "score_mode": "sum",
+        }
+    }
+
+    return final_query
+
+
+def unrestricted_query(search_params, config=query_config):
     query = {"bool": {"must": [], "should": [], "filter": []}}
 
     for field in ["problem", "expertise"]:
@@ -53,7 +98,7 @@ def build_query(search_params, config=query_config):
             )
 
     if "neighborhood" in search_params:
-        query["bool"]["should"].extend(
+        query["bool"]["filter"].extend(
             [{"match": {"clinic.address": e}} for e in search_params["neighborhood"]]
         )
 
