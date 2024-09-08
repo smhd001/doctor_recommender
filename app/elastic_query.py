@@ -22,7 +22,7 @@ print(es.info())
 def search(search_params) -> list[str]:
     # result = dummy_query(search_params)
     config = configure_query(search_params, query_config)
-    final_query = build_minimal_query(search_params, config)
+    final_query = build_query(search_params, config)
     result = es.search(index="doctors", body={"query": final_query})
     return format_result(result, search_params)
 
@@ -169,7 +169,7 @@ def dummy_query(text):
 
 def get_lat_long(result, city):
     for c in result["_source"]["clinic"]:
-        if not city or c["city"] == city:
+        if not city or c["city"] == city[0]:
             if c["lat"] and c["long"]:
                 return c["lat"], c["long"]
     return None

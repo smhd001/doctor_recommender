@@ -35,6 +35,7 @@ with voice_input:
     text = speech_to_text(
         language="fa", use_container_width=True, just_once=True, key="STT"
     )
+    state.text_received
 with text_input:
     text = st.text_input("search")
 
@@ -51,10 +52,8 @@ if text:
     state.search_result = search_result
 
 
-state.text_received
-
 st.html('<p style="direction:LTR">slots<p>')
-st.data_editor(state.slots)
+state.slots
 
 for res in state.search_result:
     title, lat_long, description = res
