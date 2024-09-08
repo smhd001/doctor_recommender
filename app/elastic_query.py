@@ -76,16 +76,27 @@ def build_query(search_params, config=query_config):
     if "first-available-appointment" in search_params:
         query["bool"]["must_not"].append({"term": {"presence_freeturn": 0}})
 
-    final_query = {
-        "function_score": {
-            "query": query,
-            "functions": list(config["function_score"].values()),
-            "boost_mode": "sum",
-            "score_mode": "sum",
-        }
-    }
-
-    return final_query
+    # final_query = {
+    #     "function_score": {
+    #         "query": query,
+    #         "functions": list(config["function_score"].values()),
+    #         "boost_mode": "sum",
+    #         "score_mode": "sum",
+    #         "max_boost": 5,
+    #     }
+    # }
+    query["bool"]["should"].extend(
+        [
+            {
+                "function_score": {
+                    "functions": [f, {"weight": 5}],
+                    "score_mode": "min",
+                }
+            }
+            for f in list(config["function_score"].values())
+        ]
+    )
+    return query
 
 
 def unrestricted_query(search_params, config=query_config):

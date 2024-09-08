@@ -65,7 +65,6 @@ persian_index_analyzer = {
         "arabic_normalization",
         "persian_normalization",
         "remove_suffix_m",
-        "persian_stemmer",
     ],
 }
 persian_search_analyzer = deepcopy(persian_index_analyzer)
@@ -73,9 +72,11 @@ persian_search_analyzer["filter"].append("synonyms")
 # stop should happen after synonym other wive elastic crash
 # e.g in تب و لرز, مالاریا
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-synonym-graph-tokenfilter.html#_stop_token_filter_before_synonym_token_filter_2
+# stop word also should be before stemmer other wise some additional words would be deleted
+# e.g : بینی -> بین 
+persian_index_analyzer["filter"].extent(["persian_stop", "persian_stemmer"])
+persian_search_analyzer["filter"].extent(["persian_stop", "persian_stemmer"])
 
-persian_index_analyzer["filter"].append("persian_stop")
-persian_search_analyzer["filter"].append("persian_stop")
 settings = {
     "analysis": {
         "char_filter": {
