@@ -13,8 +13,6 @@ services:
       - ELASTICSEARCH_HOST=http://ees01:9200  # Elasticsearch service URL
       - DOCKER_CONTAINER=Yes  # Environment variable from docker run
     volumes:
-      - ./app:/usr/src/app         # Mount the main app code
-      - ./doctors_data/data/processed:/usr/src/data  # Mount data folder
       - "${MODEL_PATH}:/model"  # Mount model from the docker run command
       - ~/.cached/huggingface:~/.cached/huggingface
     deploy:
