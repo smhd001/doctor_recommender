@@ -47,6 +47,87 @@ def configure_query(search_params, default_config):
 def build_query(search_params, config=query_config):
     query = {"bool": {"must": [], "must_not": [], "should": [], "filter": []}}
 
+    # between problem and expertise at least one should match 
+    problem_expertise_filter = []
+
+    for field in ["problem", "expertise"]:
+        if field in search_params:
+            query["bool"]["should"].extend(
+                [
+                    bound_query(
+                        query={
+                            "match": {
+                                f"expertise^{config["boosts"][field]}": {
+                                    "query": e,
+                                    "fuzziness": 1,
+                                }
+                            }
+                        }
+                    )
+                    for e in search_params[field]
+                ]
+            )
+            problem_expertise_filter.extend(
+                [
+                    {"match": {"expertise": {"query": e, "fuzziness": 1}}}
+                    for e in search_params[field]
+                ]
+            )
+
+    query["bool"]["filter"].extend(problem_expertise_filter)
+
+    if "neighborhood" in search_params:
+        query["bool"]["filter"].extend(
+            [{"match": {"clinic.address": e}} for e in search_params["neighborhood"]]
+        )
+
+    if "city" in search_params:
+        query["bool"]["filter"].append(
+            {"term": {"clinic.city": search_params["city"][0]}}
+        )
+
+    if "insurance" in search_params:
+        query["bool"]["filter"].extend(
+            [{"match": {"insurances": e}} for e in search_params["insurance"]]
+        )
+
+    if "gender" in search_params:
+        query["bool"]["filter"].append({"term": {"gender": search_params["gender"][0]}})
+
+    if "first-available-appointment" in search_params:
+        query["bool"]["must_not"].append({"term": {"presence_freeturn": 0}})
+
+    query["bool"]["should"].extend(
+        [bound_query(function=f) for f in list(config["function_score"].values())]
+    )
+    return query
+
+
+def bound_query(*, query=None, function=None, maximum=5):
+    # exactly one of these should not be None
+    assert (query is not None) != (function is not None)
+    if query:
+        return {
+            "function_score": {
+                "query": query,
+                "functions": [
+                    {"script_score": {"script": {"source": "Math.min(5, _score)"}}}
+                ],
+                "boost_mode": "replace",
+            }
+        }
+
+    return {
+        "function_score": {
+            "functions": [function, {"weight": maximum}],
+            "score_mode": "min",
+        }
+    }
+
+
+def build_query_v1(search_params, config=query_config):
+    query = {"bool": {"must": [], "must_not": [], "should": [], "filter": []}}
+
     problem_expertise_query = {"bool": {"should": []}}
     for field in ["problem", "expertise"]:
         if field in search_params:
