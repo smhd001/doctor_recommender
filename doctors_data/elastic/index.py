@@ -65,6 +65,7 @@ persian_index_analyzer = {
         "arabic_normalization",
         "persian_normalization",
         "remove_suffix_m",
+        "remove_suffix_am",
     ],
 }
 persian_search_analyzer = deepcopy(persian_index_analyzer)
@@ -91,6 +92,11 @@ settings = {
             "remove_suffix_m": {
                 "type": "pattern_replace",
                 "pattern": "م$",
+                "replacement": "",
+            },
+            "remove_suffix_am": { # چشام؛ 
+                "type": "pattern_replace",
+                "pattern": "ام$",
                 "replacement": "",
             },
             "synonyms": {
