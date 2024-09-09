@@ -157,6 +157,7 @@ def index(
             "presence_freeturn": row["presence_freeturn"]
             if row["presence_freeturn"]
             else 0,
+            "about": row["about"],
         }
         es.index(index="doctors", id=i, document=doc)
 
