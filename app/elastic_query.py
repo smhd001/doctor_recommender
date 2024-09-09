@@ -52,7 +52,7 @@ def build_query(search_params, config=query_config):
         if field in search_params:
             problem_expertise_query["bool"]["should"].extend(
                 [
-                    {"match": {"expertise": e, "fuzziness": 2}}
+                    {"match": {"expertise": {"query": e, "fuzziness": 1}}}
                     for e in search_params[field]
                 ]
             )
@@ -101,7 +101,7 @@ def unrestricted_query(search_params, config=query_config):
         if field in search_params:
             query["bool"]["should"].extend(
                 [
-                    {"match": {"expertise": e, "fuzziness": 2}}
+                    {"match": {"expertise": {"query": e, "fuzziness": 1}}}
                     for e in search_params[field]
                 ]
             )
@@ -143,7 +143,7 @@ def build_minimal_query(search_params, config=query_config):
         if field in search_params:
             query["bool"]["should"].extend(
                 [
-                    {"match": {"expertise": e, "fuzziness": 2}}
+                    {"match": {"expertise": {"query": e, "fuzziness": 2}}}
                     for e in search_params[field]
                 ]
             )
