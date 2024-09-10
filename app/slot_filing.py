@@ -15,7 +15,7 @@ model = ORTModelForTokenClassification.from_pretrained(
     provider="CUDAExecutionProvider",
 )
 
-model_id = "HooshvareLab/bert-base-parsbert-uncased"
+model_id = "HooshvareLab/bert-base-parsbert-ner-uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 classifier = pipeline("ner", model=model, tokenizer=tokenizer, device="cuda")
 

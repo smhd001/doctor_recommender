@@ -74,8 +74,12 @@ persian_search_analyzer["filter"].append("synonyms")
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-synonym-graph-tokenfilter.html#_stop_token_filter_before_synonym_token_filter_2
 # stop word also should be before stemmer other wise some additional words would be deleted
 # e.g : بینی -> بین
-persian_index_analyzer["filter"].extend(["persian_stop", "persian_stemmer"])
-persian_search_analyzer["filter"].extend(["persian_stop", "persian_stemmer"])
+persian_index_analyzer["filter"].extend(
+    ["persian_stop", "dard_stop_word", "persian_stemmer"]
+)
+persian_search_analyzer["filter"].extend(
+    ["persian_stop", "dard_stop_word", "persian_stemmer"]
+)
 MIM = "م"
 ALEPH = "ا"
 
@@ -90,7 +94,7 @@ settings = {
         "filter": {
             "persian_stop": {"type": "stop", "stopwords": "_persian_"},
             "persian_stemmer": {"type": "stemmer", "language": "persian"},
-            "remove_suffix_m_or_am": { # چشام دستم
+            "remove_suffix_m_or_am": {  # چشام دستم
                 "type": "pattern_replace",
                 "pattern": "(?<=.{3})"
                 + f"{ALEPH}{MIM}$"
@@ -103,6 +107,10 @@ settings = {
                 "type": "synonym_graph",
                 "synonyms_set": "synonyms-set",
                 "updateable": True,
+            },
+            "dard_stop_word": {
+                "type": "stop",
+                "stopwords": ["درد"],
             },
         },
         "analyzer": {

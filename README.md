@@ -75,6 +75,6 @@ https://www.paziresh24.com/
 
 for their api
 
-Mohammad Amin and Amirhossein Karami @amirkaramifini for project definition
+Mohammad Amin @mohamin1995 and taha
 
 and every body who helps us for data gathering
