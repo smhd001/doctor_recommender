@@ -51,7 +51,7 @@ Tags List
     City: The city in which the user wants to find a doctor.
     Gender: The gender of the doctor preferred by the user.
     Neighborhood: The neighborhood where the doctor's clinic is located.
-    Online-or-In-Person: The availability of online appointments versus in-person visits.
+    Online-or-In-Person: The availability of online reservation versus in-person visits.
     Insurance: The types of insurance accepted by the doctor.
     First-Available-Appointment: The earliest possible time for the user to see the doctor.
     Amount-of-Delay: The expected waiting time at the clinic.
