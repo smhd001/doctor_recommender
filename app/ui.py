@@ -32,16 +32,22 @@ summary, input, .stMarkdown {
 voice_input, text_input = st.tabs(["voice", "text"])
 
 with voice_input:
-    text = speech_to_text(
+    voice_text = speech_to_text(
         language="fa", use_container_width=True, just_once=True, key="STT"
     )
-    state.text_received
+    voice_text
 with text_input:
-    text = st.text_input("search")
+    type_text = st.text_input("search")
 
 # text = "دکتر قلب خوش اخلاق وکیل آباد مشهد"
 
-if text:
+if voice_text or type_text:
+    if voice_text:
+        text = voice_text
+        voice_text = None
+    else:
+        text = type_text
+        type_text = None
     state.text_received = text
     print("result of asr", text)
     slots = slot_filing(text)
