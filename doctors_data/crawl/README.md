@@ -1,12 +1,12 @@
-Doctors Data Crawling and Preprocessing
+# Doctors Data Crawling and Preprocessing
 
 This project crawls, processes, and analyzes doctors' data from a healthcare platform. It consists of three main stages:
 
-    Crawling doctors' information from an API.
-    Preprocessing and selecting key features from the raw data.
-    Crawling and extracting the "About Me" section for doctors with available information.
+   - Crawling doctors' information from an API.
+   - Preprocessing and selecting key features from the raw data.
+   - Crawling and extracting the "About Me" section for doctors with available information.
 
-Prerequisites
+## Prerequisites
 
 To run the scripts, ensure you have the following Python packages installed:
 
@@ -14,7 +14,7 @@ bash
 
 pip install requests beautifulsoup4 pandas numpy tqdm
 
-1. Crawling Doctors' Information from API
+ 1. Crawling Doctors' Information from API
 
 The first script (main_crawl.py) collects data on doctors from various cities and specialties by querying an API.
 How it Works:
@@ -23,7 +23,7 @@ How it Works:
     API Requests: For each city and expertise combination, data is retrieved across multiple pages (up to 25 pages per combination).
     Data Storage: The data is saved in new_doctors.json under the ../data/raw/ directory.
 
-Usage:
+### Usage:
 
 bash
 
@@ -43,7 +43,7 @@ Key Steps:
     Complex Field Extraction: Processes fields like centers (clinics), rate_info (ratings), and expertise to extract structured information.
     Feature Selection: Key features such as doctor ratings, experience, and online booking status are selected.
 
-Usage:
+### Usage:
 
 bash
 
@@ -62,7 +62,7 @@ Key Steps:
     Partitioning: Processes the dataset in 40 partitions to manage API limits and performance.
     Data Cleaning: Removes HTML tags from the "About Me" sections.
 
-Usage:
+### Usage:
 
 bash
 
@@ -78,6 +78,6 @@ Directory Structure
     ../data/processed/: Contains processed and partitioned data files (new_dataset.csv, about_dataset.csv).
     ../elastic/symptomes.json: Contains symptom mapping data for expertise.
 
-License
+### License
 
 This project is open-source. Contributions are welcome!
